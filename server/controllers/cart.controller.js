@@ -39,9 +39,18 @@ const getCartItems = async (req, res) => {
         const cartItems = await Cart.find({
             user: req.user.id
         }).populate("product");
+
+        const total = cartItems.reduce(
+            (sum, item) =>
+                sum +
+                item.product.price * item.quantity,
+            0
+        );
+
         res.status(200).json({
             success: true,
             cartItems,
+            total
         });
     } catch (error) {
         res.status(500).json({
