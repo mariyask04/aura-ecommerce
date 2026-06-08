@@ -183,8 +183,8 @@ Live Deployment
 
 ## Live Links
 
-Frontend: https://your-vercel-link.vercel.app
-Backend: https://your-render-link.onrender.com
+Frontend: https://aura-ecommerce-tan.vercel.app
+Backend: https://aura-ecommerce-o6fr.onrender.com
 
 ## Author
 
