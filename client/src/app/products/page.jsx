@@ -25,11 +25,12 @@ export default function ProductsPage() {
     const [loading, setLoading] = useState(true);
     const [products, setProducts] = useState([]);
     const [focused, setFocused] = useState(false);
+    const [filter, setFilter] = useState("");
 
     const fetchProducts = async () => {
         try {
             setLoading(true);
-            const data = await getProducts(search);
+            const data = await getProducts(search, filter);
             setProducts(data.products);
         } catch (error) {
             console.log(error);
@@ -40,7 +41,7 @@ export default function ProductsPage() {
 
     useEffect(() => {
         fetchProducts();
-    }, [search]);
+    }, [search, filter]);
 
     return (
         <ProtectedRoute>
@@ -64,50 +65,63 @@ export default function ProductsPage() {
                     </motion.div>
 
                     {/* Search Bar */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 12 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1, duration: 0.4 }}
-                        className="mb-8"
-                    >
+                    <div className="grid md:grid-cols-4 gap-4 mb-8">
+
                         <motion.div
-                            animate={focused ? { scale: 1.01 } : { scale: 1 }}
+                            animate={
+                                focused
+                                    ? { scale: 1.01 }
+                                    : { scale: 1 }
+                            }
                             transition={{ duration: 0.2 }}
-                            className={`relative rounded-2xl transition-all duration-200 ${focused ? "ring-2 ring-blue-400 ring-offset-2" : ""
-                                }`}
+                            className="md:col-span-3 relative"
                         >
-                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
+                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                                ...
                             </span>
+
                             <input
                                 type="text"
                                 placeholder="Search products..."
                                 value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                                onFocus={() => setFocused(true)}
-                                onBlur={() => setFocused(false)}
-                                className="w-full pl-11 pr-4 py-3.5 rounded-2xl border border-slate-200 bg-white/80 backdrop-blur-sm text-slate-800 placeholder-slate-300 text-sm outline-none shadow-sm hover:border-slate-300 transition-colors duration-200"
+                                onChange={(e) =>
+                                    setSearch(e.target.value)
+                                }
+                                onFocus={() =>
+                                    setFocused(true)
+                                }
+                                onBlur={() =>
+                                    setFocused(false)
+                                }
+                                className="w-full pl-11 pr-4 py-3.5 rounded-2xl border border-slate-200 bg-white"
                             />
-                            <AnimatePresence>
-                                {search && (
-                                    <motion.button
-                                        initial={{ opacity: 0, scale: 0.8 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        exit={{ opacity: 0, scale: 0.8 }}
-                                        transition={{ duration: 0.15 }}
-                                        onClick={() => setSearch("")}
-                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
-                                    >
-                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                        </svg>
-                                    </motion.button>
-                                )}
-                            </AnimatePresence>
                         </motion.div>
-                    </motion.div>
+
+                        <select
+                            value={filter}
+                            onChange={(e) =>
+                                setFilter(e.target.value)
+                            }
+                            className="px-4 py-3 rounded-2xl border border-slate-200 bg-white"
+                        >
+                            <option value="">
+                                All Products
+                            </option>
+
+                            <option value="under1000">
+                                Under ₹1000
+                            </option>
+
+                            <option value="1000to3000">
+                                ₹1000 - ₹3000
+                            </option>
+
+                            <option value="above3000">
+                                Above ₹3000
+                            </option>
+                        </select>
+
+                    </div>
 
                     {/* Grid */}
                     <AnimatePresence mode="wait">

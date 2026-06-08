@@ -2,13 +2,24 @@ import Product from "../models/Product.model.js";
 
 const getProducts = async (req, res) => {
     try {
-        const { search } = req.query;
+        const { search, minPrice, maxPrice, } = req.query;
         let query = {};
         if (search) {
             query.name = {
                 $regex: search,
                 $options: "i",
             };
+        }
+        if (minPrice || maxPrice) {
+            query.price = {};
+
+            if (minPrice)
+                query.price.$gte =
+                    Number(minPrice);
+
+            if (maxPrice)
+                query.price.$lte =
+                    Number(maxPrice);
         }
         const products = await Product.find(query);
         res.status(200).json({

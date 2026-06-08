@@ -49,10 +49,18 @@ export default function ProductDetailsPage() {
     const fetchProduct = async () => {
         try {
             const data = await getProductById(id);
+
+            if (!data?.product) {
+                toast.error("Product not found");
+                router.push("/products");
+                return;
+            }
+
             setProduct(data.product);
-            setSelectedImage(data.product.images[0]);
+            setSelectedImage(data.product.images?.[0] || "");
         } catch (error) {
             console.log(error);
+            toast.error("Failed to load product");
         } finally {
             setLoading(false);
         }
@@ -81,7 +89,7 @@ export default function ProductDetailsPage() {
             <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/40">
                 <Navbar />
 
-                {loading ? (
+                {loading || !product ? (
                     <DetailSkeleton />
                 ) : (
                     <motion.div
@@ -142,8 +150,8 @@ export default function ProductDetailsPage() {
                                                 whileTap={{ scale: 0.94 }}
                                                 onClick={() => setSelectedImage(image)}
                                                 className={`relative rounded-xl overflow-hidden border-2 transition-all duration-200 ${selectedImage === image
-                                                        ? "border-blue-500 shadow-md shadow-blue-100"
-                                                        : "border-transparent hover:border-slate-300"
+                                                    ? "border-blue-500 shadow-md shadow-blue-100"
+                                                    : "border-transparent hover:border-slate-300"
                                                     }`}
                                             >
                                                 <img
@@ -199,10 +207,10 @@ export default function ProductDetailsPage() {
                                         whileHover={{ scale: addingToCart ? 1 : 1.03, y: addingToCart ? 0 : -1 }}
                                         whileTap={{ scale: addingToCart ? 1 : 0.97 }}
                                         className={`flex-1 py-3.5 rounded-xl text-sm font-semibold text-white shadow-md transition-all duration-200 flex items-center justify-center gap-2 ${added
-                                                ? "bg-emerald-500 shadow-emerald-200"
-                                                : addingToCart
-                                                    ? "bg-blue-400 cursor-not-allowed shadow-blue-100"
-                                                    : "bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 shadow-blue-200"
+                                            ? "bg-emerald-500 shadow-emerald-200"
+                                            : addingToCart
+                                                ? "bg-blue-400 cursor-not-allowed shadow-blue-100"
+                                                : "bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 shadow-blue-200"
                                             }`}
                                     >
                                         <AnimatePresence mode="wait">
